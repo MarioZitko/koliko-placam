@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "leaflet/dist/leaflet.css";
 @import "@fontsource-variable/figtree";
 
 @custom-variant dark (&:is(.dark *));
@@ -127,4 +128,87 @@
   html {
     @apply font-sans;
     }
+}
+
+/* ─── Leaflet: custom animated markers ─────────────────────────────────────── */
+
+/* Selected city marker wrapper */
+.lm-selected {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Shared dot base */
+.lm-dot {
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  position: relative;
+  z-index: 2;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.lm-dot:hover {
+  transform: scale(1.4) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+}
+
+/* Selected dot: white ring border + gentle breathe */
+.lm-dot-sel {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid white;
+  animation: lm-breathe 2.6s ease-in-out infinite;
+}
+
+/* Pulsing ring (two staggered for continuous effect) */
+.lm-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  animation: lm-pulse 2.6s ease-out infinite;
+}
+
+.lm-ring-2 {
+  animation-delay: 1.3s;
+}
+
+@keyframes lm-pulse {
+  0%   { transform: scale(0.9); opacity: 0.75; }
+  100% { transform: scale(3.6); opacity: 0; }
+}
+
+@keyframes lm-breathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.1); }
+}
+
+/* ─── Leaflet: tooltip overrides ───────────────────────────────────────────── */
+.leaflet-tooltip {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+  padding: 8px 11px !important;
+  color: var(--foreground) !important;
+  font-family: inherit !important;
+}
+
+.leaflet-tooltip-top::before {
+  border-top-color: var(--border) !important;
+}
+
+/* ─── Number input: hide native spin buttons ────────────────────────────────── */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
 }
