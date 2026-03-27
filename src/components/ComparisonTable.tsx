@@ -17,7 +17,7 @@ export function ComparisonTable({ allResults, selectedCity, onCitySelect }: Prop
       <div className="px-4 py-3 border-b border-border">
         <h3 className="text-sm font-semibold">Usporedba gradova</h3>
         <p className="text-xs text-muted-foreground">
-          Zona 1 (centar) za sve gradove · kliknite za odabir
+          Zona 1 (centar) · komunalna naknada + odvoz otpada · kliknite za odabir
         </p>
       </div>
       <div className="overflow-y-auto max-h-72">
@@ -35,7 +35,7 @@ export function ComparisonTable({ allResults, selectedCity, onCitySelect }: Prop
           <tbody>
             {allResults.map((r, i) => {
               const isSelected = r.city.id === selectedCity.id;
-              const diff = r.annualTotal - selectedResult.annualTotal;
+              const diff = r.totalAnnual - selectedResult.totalAnnual;
               return (
                 <tr
                   key={r.city.id}
@@ -50,7 +50,7 @@ export function ComparisonTable({ allResults, selectedCity, onCitySelect }: Prop
                     <span className="font-medium">{r.city.name}</span>
                     <span className="ml-1.5 text-xs">{r.city.confirmed ? '✓' : '⚠'}</span>
                   </td>
-                  <td className="px-4 py-2.5 text-right font-mono">{fmt.format(r.annualTotal)}</td>
+                  <td className="px-4 py-2.5 text-right font-mono">{fmt.format(r.totalAnnual)}</td>
                   <td className="px-4 py-2.5 text-right font-mono text-muted-foreground text-xs">
                     {fmt.format(r.monthlyTotal)}
                   </td>

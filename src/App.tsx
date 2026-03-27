@@ -1,13 +1,18 @@
+import { useState } from 'react';
 import { useCalculator } from '@/hooks/useCalculator';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { Map } from '@/components/Map';
 import { Calculator } from '@/components/Calculator';
 import { ComparisonTable } from '@/components/ComparisonTable';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { SourcesPage } from '@/pages/SourcesPage';
 import { Badge } from '@/components/ui/badge';
+
+type Tab = 'kalkulator' | 'gradovi';
 
 export default function App() {
   const { dark, toggle } = useDarkMode();
+  const [activeTab, setActiveTab] = useState<Tab>('kalkulator');
   const {
     selectedCity, setSelectedCity,
     sqm, setSqm,
@@ -30,34 +35,59 @@ export default function App() {
             <ThemeToggle dark={dark} onToggle={toggle} />
           </div>
         </div>
+
+        {/* Tab nav */}
+        <div className="max-w-6xl mx-auto px-4">
+          <nav className="flex gap-1 -mb-px">
+            {(['kalkulator', 'gradovi'] as Tab[]).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`
+                  px-4 py-2 text-sm font-medium border-b-2 transition-colors capitalize
+                  ${activeTab === tab
+                    ? 'border-foreground text-foreground'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground'
+                  }
+                `}
+              >
+                {tab === 'kalkulator' ? 'Kalkulator' : 'Gradovi & Podaci'}
+              </button>
+            ))}
+          </nav>
+        </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
-          <div>
-            <Map
-              selectedCity={selectedCity}
-              onCitySelect={setSelectedCity}
-              sqm={sqm}
-              dark={dark}
-            />
-            <ComparisonTable
-              allResults={allResults}
-              selectedCity={selectedCity}
-              onCitySelect={setSelectedCity}
-            />
+        {activeTab === 'kalkulator' ? (
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+            <div>
+              <Map
+                selectedCity={selectedCity}
+                onCitySelect={setSelectedCity}
+                sqm={sqm}
+                dark={dark}
+              />
+              <ComparisonTable
+                allResults={allResults}
+                selectedCity={selectedCity}
+                onCitySelect={setSelectedCity}
+              />
+            </div>
+            <div>
+              <Calculator
+                selectedCity={selectedCity}
+                sqm={sqm}
+                zone={zone}
+                result={result}
+                onSqmChange={setSqm}
+                onZoneChange={setZone}
+              />
+            </div>
           </div>
-          <div>
-            <Calculator
-              selectedCity={selectedCity}
-              sqm={sqm}
-              zone={zone}
-              result={result}
-              onSqmChange={setSqm}
-              onZoneChange={setZone}
-            />
-          </div>
-        </div>
+        ) : (
+          <SourcesPage />
+        )}
       </main>
 
       <footer className="border-t border-border mt-8">

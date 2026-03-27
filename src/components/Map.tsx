@@ -1,8 +1,17 @@
-import { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Tooltip, useMap } from 'react-leaflet';
+import { useEffect, useRef, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Tooltip, useMap, GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
+import type { GeoJsonObject, Feature } from 'geojson';
 import { CITIES } from '@/data/cities';
 import type { City } from '@/types';
+
+// GeoJSON 'name' → city.county (only special case needed)
+const GEOJSON_TO_COUNTY: Record<string, string> = {
+  'Zagreb': 'Grad Zagreb',
+};
+function resolveCounty(geoName: string): string {
+  return GEOJSON_TO_COUNTY[geoName] ?? geoName;
+}
 
 function markerColor(b: number): string {
   if (b <= 1.2) return '#16a34a';
@@ -32,23 +41,14 @@ function createIcon(color: string, isSelected: boolean): L.DivIcon {
   });
 }
 
-/** Smooth-flies the map to the selected city whenever it changes. */
 function FlyToCity({ city }: { city: City }) {
   const map = useMap();
   const isFirst = useRef(true);
-
   useEffect(() => {
-    if (isFirst.current) {
-      isFirst.current = false;
-      return;
-    }
-    map.flyTo([city.lat, city.lng], Math.max(map.getZoom(), 8), {
-      duration: 1.1,
-      easeLinearity: 0.2,
-    });
+    if (isFirst.current) { isFirst.current = false; return; }
+    map.flyTo([city.lat, city.lng], Math.max(map.getZoom(), 8), { duration: 1.1, easeLinearity: 0.2 });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city.id]);
-
   return null;
 }
 
@@ -60,12 +60,71 @@ type Props = {
 };
 
 export function Map({ selectedCity, onCitySelect, sqm, dark }: Props) {
+  const [counties, setCounties] = useState<GeoJsonObject | null>(null);
+  const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
+  const geoJsonRef = useRef<L.GeoJSON | null>(null);
+
+  useEffect(() => {
+    fetch('/counties.geojson')
+      .then(r => r.json())
+      .then(setCounties)
+      .catch(() => {/* silently fail */});
+  }, []);
+
   const tileUrl = dark
     ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
     : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
+  function onEachCounty(feature: Feature, layer: L.Layer) {
+    const countyName = (feature.properties as any)?.name as string | undefined;
+    if (!countyName) return;
+    const normalizedName = resolveCounty(countyName);
+    const citiesInCounty = CITIES.filter(c => c.county === normalizedName);
+
+    layer.on({
+      mouseover(e) {
+        const l = e.target as L.Path;
+        l.setStyle({ fillOpacity: dark ? 0.28 : 0.20, weight: 2.5, opacity: 0.9 });
+        setHoveredCounty(countyName);
+      },
+      mouseout(e) {
+        const l = e.target as L.Path;
+        l.setStyle({ fillOpacity: dark ? 0.07 : 0.05, weight: dark ? 1.5 : 1, opacity: dark ? 0.55 : 0.45 });
+        setHoveredCounty(null);
+      },
+      click() {
+        if (citiesInCounty.length === 0) return;
+        // Select city with highest B value in this county (most interesting)
+        const city = citiesInCounty.reduce((best, c) => c.b > best.b ? c : best, citiesInCounty[0]);
+        onCitySelect(city);
+      },
+    });
+
+    if (citiesInCounty.length > 0) {
+      const names = citiesInCounty.map(c => c.name).join(', ');
+      layer.bindTooltip(
+        `<div style="font-size:12px;font-weight:600">${countyName} županija</div>` +
+        `<div style="font-size:11px;opacity:0.7">${names}</div>`,
+        { sticky: true, opacity: 0.92 }
+      );
+    }
+  }
+
+  const countyStyle = (_feature?: Feature): L.PathOptions => ({
+    fillColor: dark ? '#818cf8' : '#4f46e5',
+    fillOpacity: dark ? 0.07 : 0.05,
+    color: dark ? '#a5b4fc' : '#6366f1',
+    weight: dark ? 1.5 : 1,
+    opacity: dark ? 0.55 : 0.45,
+  });
+
   return (
-    <div className="overflow-hidden rounded-xl border border-border shadow-sm">
+    <div className="relative overflow-hidden rounded-xl border border-border shadow-sm">
+      {hoveredCounty && (
+        <div className="absolute z-[500] top-2 left-2 bg-background/90 backdrop-blur-sm border border-border rounded-md px-2 py-1 text-xs font-medium pointer-events-none">
+          {hoveredCounty} županija
+        </div>
+      )}
       <MapContainer
         center={[44.8, 16.5]}
         zoom={7}
@@ -79,6 +138,16 @@ export function Map({ selectedCity, onCitySelect, sqm, dark }: Props) {
           subdomains="abcd"
           maxZoom={19}
         />
+
+        {counties && (
+          <GeoJSON
+            key={dark ? 'geojson-dark' : 'geojson-light'}
+            ref={geoJsonRef}
+            data={counties}
+            style={countyStyle}
+            onEachFeature={onEachCounty}
+          />
+        )}
 
         <FlyToCity city={selectedCity} />
 

@@ -18,13 +18,19 @@ export type City = {
   sourceUrl: string;
   sourceYear: number;
   confirmed: boolean;
+  // Odvoz otpada — annual cost for standard 120L bin, weekly pickup, stambeni
+  wasteAnnual: number;
+  wasteConfirmed: boolean;
+  wasteSourceUrl?: string;
 };
 
 export type CalculationResult = {
   city: City;
   zone: ZoneNumber;
   sqm: number;
-  annualTotal: number;
-  monthlyTotal: number;
+  naknadaAnnual: number;  // komunalna naknada only
+  wasteAnnual: number;    // odvoz otpada (fixed, not m²-dependent)
+  totalAnnual: number;    // naknadaAnnual + wasteAnnual
+  monthlyTotal: number;   // totalAnnual / 12
   formula: string;
 };

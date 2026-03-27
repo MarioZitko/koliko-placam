@@ -33,6 +33,10 @@ export const CITIES: City[] = [
     sourceUrl: 'https://informator.hr/zakoni/635393-odluka-o-komunalnoj-naknadi-procisceni-tekst',
     sourceYear: 2024,
     confirmed: true,
+    wasteAnnual: 96,
+    wasteConfirmed: false,
+    wasteSourceUrl: 'https://www.cistoca.hr/usluge/cjenici-usluga/1230',
+    // ~8 €/mj minimum (Čistoća Zagreb), procjena za standardno kućanstvo
   },
   {
     id: 'split',
@@ -46,6 +50,9 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.split.hr',
     sourceYear: 2025,
     confirmed: false,
+    wasteAnnual: 72,
+    wasteConfirmed: false,
+    // ~6 €/mj procjena
   },
   {
     id: 'rijeka',
@@ -59,6 +66,10 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.rijeka.hr',
     sourceYear: 2025,
     confirmed: false,
+    wasteAnnual: 168,
+    wasteConfirmed: true,
+    wasteSourceUrl: 'https://www.novilist.hr/rijeka-regija/rijeka/spasavanje-cistoce-od-1-sijecnja-2026-odvoz-smeca-u-rijeci-skuplji-za-cak-70-posto/',
+    // Potvrđeno: min. javna usluga 14 €/mj od 01.01.2026. (Novi list)
   },
   {
     id: 'osijek',
@@ -69,9 +80,15 @@ export const CITIES: City[] = [
     b: 1.884,
     zoneCount: 3,
     zones: threeZones(1.0, 0.75, 0.50),
-    sourceUrl: 'https://www.komunal.hr/vijesti/u-novu-godinu-s-novim-cijenama-komunalnih-usluga',
+    sourceUrl: 'https://www.osijek.hr/dokumenti/izvjesce-nacrt-odluke-o-odredivanju-vrijednosti-boda-komunalne-naknade/',
     sourceYear: 2026,
     confirmed: true,
+    // POTVRĐENO: Nacrt odluke o povećanju vrijednosti boda komunalne naknade
+    // B: 0.1128 → 0.157 €/m²/mj = 1.884 €/m²/god, od 01.01.2026.
+    wasteAnnual: 66.6,
+    wasteConfirmed: true,
+    wasteSourceUrl: 'https://komarilos.com/politika-i-gradska-uprava/od-1-sijecnja-2026-cijena-minimalne-javne-usluge-odvoza-smeca-ide-sa-405-na-555-eura/',
+    // Potvrđeno: 5.55 €/mj od 01.01.2026. (komunal.hr, komarilos.com)
   },
   {
     id: 'zadar',
@@ -85,6 +102,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.zadar.hr',
     sourceYear: 2025,
     confirmed: false,
+    wasteAnnual: 84,
+    wasteConfirmed: false,
   },
   {
     id: 'dubrovnik',
@@ -98,6 +117,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.dubrovnik.hr',
     sourceYear: 2025,
     confirmed: false,
+    wasteAnnual: 96,
+    wasteConfirmed: false,
   },
   {
     id: 'pula',
@@ -111,6 +132,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.pula.hr',
     sourceYear: 2026,
     confirmed: false,
+    wasteAnnual: 78,
+    wasteConfirmed: false,
   },
   {
     id: 'varazdin',
@@ -124,6 +147,9 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.varazdin.hr',
     sourceYear: 2026,
     confirmed: false,
+    wasteAnnual: 72,
+    wasteConfirmed: false,
+    // ~+20% od 2026. (komunal.hr)
   },
   {
     id: 'sibenik',
@@ -137,6 +163,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.sibenik.hr',
     sourceYear: 2025,
     confirmed: false,
+    wasteAnnual: 78,
+    wasteConfirmed: false,
   },
   {
     id: 'karlovac',
@@ -150,6 +178,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.karlovac.hr',
     sourceYear: 2026,
     confirmed: false,
+    wasteAnnual: 60,
+    wasteConfirmed: false,
   },
   {
     id: 'slavonski-brod',
@@ -163,6 +193,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.slavonski-brod.hr',
     sourceYear: 2026,
     confirmed: false,
+    wasteAnnual: 66,
+    wasteConfirmed: false,
   },
   {
     id: 'makarska',
@@ -176,6 +208,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.makarska.hr',
     sourceYear: 2026,
     confirmed: false,
+    wasteAnnual: 96,
+    wasteConfirmed: false,
   },
   {
     id: 'koprivnica',
@@ -189,6 +223,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.koprivnica.hr',
     sourceYear: 2026,
     confirmed: false,
+    wasteAnnual: 60,
+    wasteConfirmed: false,
   },
   {
     id: 'bjelovar',
@@ -202,6 +238,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.bjelovar.hr',
     sourceYear: 2026,
     confirmed: false,
+    wasteAnnual: 60,
+    wasteConfirmed: false,
   },
   {
     id: 'sisak',
@@ -215,7 +253,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.sisak.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — telegram.hr: +35% 2026, old B ~1.00
+    wasteAnnual: 54,
+    wasteConfirmed: false,
   },
   {
     id: 'cakovec',
@@ -229,7 +268,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.cakovec.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — Međimurje region, mid-range; verify at cakovec.hr → Službeni glasnik
+    wasteAnnual: 60,
+    wasteConfirmed: false,
   },
   {
     id: 'velika-gorica',
@@ -243,7 +283,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.velika-gorica.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — large Zagreb-area city; verify at velika-gorica.hr
+    wasteAnnual: 84,
+    wasteConfirmed: false,
   },
   {
     id: 'samobor',
@@ -257,7 +298,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.samobor.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — Zagreb commuter town; verify at samobor.hr
+    wasteAnnual: 72,
+    wasteConfirmed: false,
   },
   {
     id: 'rovinj',
@@ -271,7 +313,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.rovinj.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — Istrian tourist city, higher rates; verify at rovinj.hr
+    wasteAnnual: 84,
+    wasteConfirmed: false,
   },
   {
     id: 'opatija',
@@ -285,7 +328,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.opatija.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — premium Kvarner resort; likely highest residential B in Croatia; verify at opatija.hr
+    wasteAnnual: 120,
+    wasteConfirmed: false,
   },
   {
     id: 'crikvenica',
@@ -299,7 +343,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.crikvenica.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — Kvarner coastal; verify at crikvenica.hr
+    wasteAnnual: 96,
+    wasteConfirmed: false,
   },
   {
     id: 'vinkovci',
@@ -313,7 +358,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.vinkovci.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — Slavonian city; similar to Slavonski Brod range
+    wasteAnnual: 60,
+    wasteConfirmed: false,
   },
   {
     id: 'vukovar',
@@ -327,7 +373,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.vukovar.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — post-war reconstruction area; likely among lowest; verify at vukovar.hr
+    wasteAnnual: 54,
+    wasteConfirmed: false,
   },
   {
     id: 'gospic',
@@ -341,7 +388,8 @@ export const CITIES: City[] = [
     sourceUrl: 'https://www.gospic.hr',
     sourceYear: 2026,
     confirmed: false,
-    // ESTIMATE — small Lika county seat; likely lowest of all cities here; verify at gospic.hr
+    wasteAnnual: 48,
+    wasteConfirmed: false,
   },
 ];
 
