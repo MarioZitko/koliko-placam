@@ -2,6 +2,10 @@ import { useState, useMemo } from 'react';
 import { CITIES } from '@/data/cities';
 import type { City, ZoneNumber, CalculationResult } from '@/types';
 
+function buildFormula(b: number, kz: number, kn: number, sqm: number): string {
+  return `${b.toFixed(2)} × ${kz.toFixed(2)} × ${kn.toFixed(1)} × ${sqm}m²`;
+}
+
 export function useCalculator() {
   const [selectedCity, setSelectedCityRaw] = useState<City>(CITIES[0]);
   const [sqm, setSqm] = useState<number>(80);
@@ -27,7 +31,7 @@ export function useCalculator() {
       wasteAnnual,
       totalAnnual,
       monthlyTotal: totalAnnual / 12,
-      formula: `${selectedCity.b.toFixed(2)} × ${kz.toFixed(2)} × ${kn.toFixed(1)} × ${sqm}m²`,
+      formula: buildFormula(selectedCity.b, kz, kn, sqm),
     };
   }, [selectedCity, sqm, zone]);
 
@@ -47,7 +51,7 @@ export function useCalculator() {
         wasteAnnual,
         totalAnnual,
         monthlyTotal: totalAnnual / 12,
-        formula: `${city.b.toFixed(2)} × ${kz.toFixed(2)} × ${kn.toFixed(1)} × ${sqm}m²`,
+        formula: buildFormula(city.b, kz, kn, sqm),
       };
     }).sort((a, b) => a.totalAnnual - b.totalAnnual),
   [sqm]);

@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ZoneSelector } from './ZoneSelector';
 import { ResultCard } from './ResultCard';
-import { MonthlyExpenses } from './MonthlyExpenses';
 import type { City, ZoneNumber, CalculationResult } from '@/types';
 
 type Props = {
@@ -16,7 +15,6 @@ type Props = {
 
 export function Calculator({ selectedCity, sqm, zone, result, onSqmChange, onZoneChange }: Props) {
   return (
-    <div className="space-y-3">
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
@@ -77,8 +75,5 @@ export function Calculator({ selectedCity, sqm, zone, result, onSqmChange, onZon
         <ResultCard result={result} />
       </CardContent>
     </Card>
-
-    <MonthlyExpenses result={result} />
-    </div>
   );
 }

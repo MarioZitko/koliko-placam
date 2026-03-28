@@ -6,6 +6,25 @@ const fmt = new Intl.NumberFormat('hr-HR', { style: 'currency', currency: 'EUR',
 type SortKey = 'name' | 'b' | 'wasteAnnual' | 'county';
 type SortDir = 'asc' | 'desc';
 
+function SortHeader({
+  col, label, sortKey, sortDir, onSort,
+}: {
+  col: SortKey; label: string; sortKey: SortKey; sortDir: SortDir; onSort: (col: SortKey) => void;
+}) {
+  const active = sortKey === col;
+  return (
+    <th
+      className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors whitespace-nowrap"
+      onClick={() => onSort(col)}
+    >
+      {label}
+      <span className="ml-1 opacity-60">
+        {active ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
+      </span>
+    </th>
+  );
+}
+
 export function SourcesPage() {
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<SortKey>('b');
@@ -34,21 +53,6 @@ export function SourcesPage() {
       return sortDir === 'asc' ? cmp : -cmp;
     });
 
-  function SortHeader({ col, label }: { col: SortKey; label: string }) {
-    const active = sortKey === col;
-    return (
-      <th
-        className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors whitespace-nowrap"
-        onClick={() => toggleSort(col)}
-      >
-        {label}
-        <span className="ml-1 opacity-60">
-          {active ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
-        </span>
-      </th>
-    );
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -72,12 +76,12 @@ export function SourcesPage() {
           <table className="w-full text-sm">
             <thead className="bg-muted/50 border-b border-border">
               <tr>
-                <SortHeader col="name" label="Grad" />
-                <SortHeader col="county" label="Županija" />
+                <SortHeader col="name" label="Grad" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
+                <SortHeader col="county" label="Županija" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Zone</th>
-                <SortHeader col="b" label="B (€/m²/god)" />
+                <SortHeader col="b" label="B (€/m²/god)" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Kn naknada</th>
-                <SortHeader col="wasteAnnual" label="Otpad/god (proc.)" />
+                <SortHeader col="wasteAnnual" label="Otpad/god (proc.)" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">God. ažur.</th>
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Izvor</th>
               </tr>
